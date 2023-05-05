@@ -2,24 +2,29 @@ import { NextPage, GetStaticProps } from "next"
 
 import { Layout } from "../components/layouts";
 import { pokeApi /* , .... */ } from "../../api";    // si tenemos mas apis las podemos llamar aqui
-import { PokemonListResponse } from "../../interfaces";
+import { PokemonListResponse, SmallPokemon } from "../../interfaces";
+
+interface Props {
+  pokemons: SmallPokemon[];
+}
 
 //Listado de Pokemons
-export const HomePage: NextPage= ( props ) => {
+export const HomePage: NextPage<Props>  = ( { pokemons } ) => {
   
-  console.log({ props })
+  // console.log({ pokemons })
   
   return (
     <>
       <Layout title="Listado de Pokemons">
         <ul>
-          <li>Pokémon</li>
-          <li>Pokémon</li>
-          <li>Pokémon</li>
-          <li>Pokémon</li>
-          <li>Pokémon</li>
-          <li>Pokémon</li>
-          <li>Pokémon</li>
+          {
+            //pokemons.map((pokemon) => (
+            pokemons.map(({ id, name}) => (
+              <li key={ id }>
+                #{ id } - { name }
+              </li>
+            ))
+          }
         </ul>
       </Layout>
     </>
@@ -56,12 +61,24 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   // const { data } = await pokeApi.get('/pokemon?limit=151');
 
   const { data } = await pokeApi.get<PokemonListResponse>('/pokemon?limit=151');  // <PokemonListResponse> importado de las interfaces
-  console.log(data)
+  // console.log(data)
+
+  // https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/132.svg
+
+  // la respuesta a enviar es un nuevo arreglo de pokemon
+
+  const pokemons: SmallPokemon[] = data.results.map((element, index) => {
+    return {
+      ...element,         // mantener los elementos del array name, url
+      id: index + 1,      // agregar id e img
+      img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index + 1}.svg`
+    }
+  })
 
   return {
     props: {
       // pokemon: data.result      -> ahora se queja si no tiene los siguientes valores
-      pokemon: data.results
+      pokemons: pokemons
     }
   }
 }
