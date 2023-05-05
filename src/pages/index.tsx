@@ -1,7 +1,8 @@
 import { NextPage, GetStaticProps } from "next"
 
 import { Layout } from "../components/layouts";
-import { pokeApi /* , .... */ } from "../api";    // si tenemos mas apis las podemos llamar aqui
+import { pokeApi /* , .... */ } from "../../api";    // si tenemos mas apis las podemos llamar aqui
+import { PokemonListResponse } from "../../interfaces";
 
 //Listado de Pokemons
 export const HomePage: NextPage= ( props ) => {
@@ -52,11 +53,14 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   // const resp = await pokeApi.get('/pokemon?limit=151');
   // console.log(resp)     // aqui la data la vemos desde la consola
   
-  const { data } = await pokeApi.get('/pokemon?limit=151');
+  // const { data } = await pokeApi.get('/pokemon?limit=151');
+
+  const { data } = await pokeApi.get<PokemonListResponse>('/pokemon?limit=151');  // <PokemonListResponse> importado de las interfaces
   console.log(data)
 
   return {
     props: {
+      // pokemon: data.result      -> ahora se queja si no tiene los siguientes valores
       pokemon: data.results
     }
   }
