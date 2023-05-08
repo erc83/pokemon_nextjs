@@ -53,7 +53,7 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
                   ghost={ !isInFavorites }
                   onPress={ onToggleFavorite }
                 >
-                  { isInFavorites ? <span>En Favoritos</span>: <span>Guardar en favoritos</span>}
+                  { isInFavorites ? <Text>En Favoritos</Text>: <Text>Guardar en favoritos</Text>}
                 </Button>
               </Card.Header>
 
