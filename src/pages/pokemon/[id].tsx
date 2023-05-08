@@ -5,6 +5,7 @@ import { Grid, Card, Text, Button, Container, Image } from '@nextui-org/react';
 import { Layout } from "../../components/layouts";
 import { pokeApi } from "../../../api";
 import { Pokemon } from "../../../interfaces";
+import { localFavorites } from "../../../utils";
 
 interface Props {
   pokemon: Pokemon;       // se necesita recibir el pokemon
@@ -12,16 +13,16 @@ interface Props {
   // name: string;
 }
 
-
 const PokemonPage: NextPage<Props> = ({ pokemon }) => {
 
-  // console.log(pokemon ,"PokemonPage")
+  const onToggleFavorite = () => {
+    
+    localFavorites.toggleFavorites( pokemon.id )
 
-  const router = useRouter();
-  // console.log(router.query)
+  }
 
   return (
-    <Layout title='algun pokemon'>
+    <Layout title={ pokemon.name }>
 
         <Grid.Container css={{ marginTop: '5px'}} gap={ 2 }>
           <Grid xs={ 12 } sm={ 4 } >
@@ -46,6 +47,7 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
                 <Button
                   color="gradient"
                   ghost
+                  onPress={ onToggleFavorite }
                 >
                   Guardar en favoritos
                 </Button>
