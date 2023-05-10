@@ -5,7 +5,9 @@ import { Layout } from "@/components/layouts"
 import NoFavorites from "@/components/ui/NoFavorites";
 
 import { localFavorites } from "../../../utils";
-import { FavoritePokemonCard } from "@/components/pokemon";
+// import { FavoritePokemonCard } from "@/components/pokemon";
+import FavoritePokemons  from "@/components/pokemon/FavoritePokemons";
+
 
 const FavoritesPage = () => {
 
@@ -23,14 +25,8 @@ const FavoritesPage = () => {
         {
           favoritePokemon.length === 0
             ? (<NoFavorites />)
-            : (
-              <Grid.Container gap={ 2 } direction="row" justify="flex-start">
-                {
-                  favoritePokemon.map(( id ) => (
-                    <FavoritePokemonCard  pokemonId={ id }/>
-                  ))
-                }
-              </Grid.Container>
+            : ( <FavoritePokemons pokemons={ favoritePokemon } />
+              
             )
         }
 

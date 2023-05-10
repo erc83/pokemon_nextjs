@@ -3,4 +3,6 @@
 
 export { PokemonCard } from './PokemonCard'
 
-export  { FavoritePokemonCard }   from './FavoritePokemonCard'
+export  *  from './FavoritePokemonCard'
+
+export * from './FavoritePokemons'
