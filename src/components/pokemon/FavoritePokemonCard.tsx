@@ -33,6 +33,3 @@ export const FavoritePokemonCard  = ( { pokemonId }: Props ) => {
   )
 }
 
-export default {
-    FavoritePokemonCard
-}

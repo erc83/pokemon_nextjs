@@ -161,11 +161,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // en tiempo de build time tenemos la data.
   const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ id }`);  // <PokemonListResponse> importado de las interfaces
 
+  const pokemonDataOptima = {
+    id: data.id,
+    name: data.name,
+    sprites: data.sprites
+  }
 
 
   return {
     props: {
-      pokemon: data
+      pokemon: pokemonDataOptima
       // id: 1,
       // name: 'Bulbasaur'
     }

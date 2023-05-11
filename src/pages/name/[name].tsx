@@ -20,6 +20,7 @@ interface Props {
 }
 
 const PokemonByNamePage: NextPage<Props> = ({ pokemon }) => {
+  // console.log({pokemon})   //revision de data pokemon
 
   const [isInFavorites, setIsInFavorites] = useState(localFavorites.existInFavorites( pokemon.id ) );
 
@@ -126,16 +127,22 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
   } 
 }
 
-
+// optimizacion data en el procesamiento estatico de la app
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   //aqui recibo el name [name].tsx  
   const { name } = params as { name: string };    // para agregar tipo al params
 
   const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ name }`);  // <PokemonListResponse> importado de las interfaces
   
+  const pokemonDataOptima = {
+    id: data.id,
+    name: data.name,
+    sprites: data.sprites
+  }
+
   return {
     props: {
-      pokemon: data
+      pokemon: pokemonDataOptima
       // id: 1,
       // name: 'Bulbasaur'
     }
