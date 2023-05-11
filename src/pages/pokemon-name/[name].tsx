@@ -10,7 +10,7 @@ import { Layout } from "../../components/layouts";
 import { pokeApi } from "../../../api";
 import { Pokemon, PokemonListResponse } from "../../../interfaces";
 
-import { localFavorites } from "../../../utils";
+import { getPokemonInfo, localFavorites } from "../../../utils";
 
 
 interface Props {
@@ -132,17 +132,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   //aqui recibo el name [name].tsx  
   const { name } = params as { name: string };    // para agregar tipo al params
 
-  const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ name }`);  // <PokemonListResponse> importado de las interfaces
-  
-  const pokemonDataOptima = {
-    id: data.id,
-    name: data.name,
-    sprites: data.sprites
-  }
 
   return {
     props: {
-      pokemon: pokemonDataOptima
+      pokemon: await getPokemonInfo( name )
       // id: 1,
       // name: 'Bulbasaur'
     }
