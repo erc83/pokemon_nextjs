@@ -8,8 +8,10 @@ import confetti from 'canvas-confetti'
 
 import { Layout } from "../../components/layouts";
 import { pokeApi } from "../../../api";
-import { Pokemon } from "../../../interfaces";
+import { Pokemon, PokemonListResponse } from "../../../interfaces";
+
 import { localFavorites } from "../../../utils";
+
 
 interface Props {
   pokemon: Pokemon;       // se necesita recibir el pokemon
@@ -17,7 +19,7 @@ interface Props {
   // name: string;
 }
 
-const PokemonPage: NextPage<Props> = ({ pokemon }) => {
+const PokemonByNamePage: NextPage<Props> = ({ pokemon }) => {
 
   const [isInFavorites, setIsInFavorites] = useState(localFavorites.existInFavorites( pokemon.id ) );
 
@@ -100,69 +102,37 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
                     width={ 100 }
                     height={ 100 }
                   />
-
                 </Container>
               </Card.Body>
-
-
-
             </Card>
           </Grid>
-
-
         </Grid.Container>
-
     </Layout>
   )
 }
 
-
-// You should use getStaticPaths if you’re statically pre-rendering pages that use dynamic routes
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
-  // const { data } = await  // your fetch function here 
   
-  const pokemons151 = [...Array(151)].map( (value, index) => `${ index + 1 }` ) ;
-  // console.log(pokemons151)   se ven por el lado del servidor
+    const { data } = await pokeApi.get<PokemonListResponse>('/pokemon?limit=151');
+    const pokemonName: string[] = data.results.map( pokemon => pokemon.name );  // creacion del array con el nombre de los pokemones
   
-  return {
+   return {
 
-    /* paths: [
-      {
-        params: { id: '1' }   // aqui recibe string como numero 
-      },
-      {
-        params: { id: '2' }
-      },
-      {
-        params: { id: '3' }
-      },
-    ], */
-    // fallback: "blocking"   <- permite mas numeros que los 3 que estan aqui
-
-    // solo se ejecuta del lado del servidor cuando se ejecuta el build de la app
-    paths: pokemons151.map( ( id ) => ({
-      // params: { id : id}
-      params: { id }
-    })),
-    fallback: false   // <- controlamos la cantidad de paginas cuando no se renderizaron en el inicio
-
-  }
+    paths: pokemonName.map( ( name ) => ({
+      // params: { name : name}
+      params: { name }
+    })), 
+    fallback: false   // <- controlamos la cantidad de paginas cuando no se renderizaron en el inicio 
+  } 
 }
 
 
-
-
-// export const getStaticProps: GetStaticProps = async (ctx) => {
-//  console.log( ctx.params, "parametros" ) 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { id } = params as { id: string };    // para agregar tipo al params
-  // console.log(id)
+  //aqui recibo el name [name].tsx  
+  const { name } = params as { name: string };    // para agregar tipo al params
 
-  // en tiempo de build time tenemos la data.
-  const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ id }`);  // <PokemonListResponse> importado de las interfaces
-
-
-
+  const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ name }`);  // <PokemonListResponse> importado de las interfaces
+  
   return {
     props: {
       pokemon: data
@@ -172,4 +142,4 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 }
 
-export default PokemonPage
+export default PokemonByNamePage
