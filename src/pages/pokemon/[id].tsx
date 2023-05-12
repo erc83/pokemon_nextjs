@@ -155,15 +155,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params as { id: string };    // para agregar tipo al params
   // console.log(id)
 
- 
-
-
   return {
     props: {
       pokemon: await getPokemonInfo( id )
-      // id: 1,
-      // name: 'Bulbasaur'
-    }
+    },
+    revalidate: 86400,  //60 * 60 * 24 = 1 dia
   }
 }
 
