@@ -144,7 +144,7 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
       // params: { id : id}
       params: { id }
     })),
-    fallback: false   // <- controlamos la cantidad de paginas cuando no se renderizaron en el inicio
+    fallback: 'blocking'   // <- deja pasar al getStaticProps y envia el nuevo argumento del id del pokemon
 
   }
 }
@@ -155,9 +155,20 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params as { id: string };    // para agregar tipo al params
   // console.log(id)
 
+  const pokemon = await getPokemonInfo( id );
+
+  if( !pokemon ) {            // si existe el pokemon puedo enviarlo a la 404 o redireccionarlo
+    return {
+      redirect:{              
+        destination: '/',
+        permanent:false       // en false, porque puede ser que lancen mas pokemones si esta en true, no vuleve hacer la peticion
+      }
+    }
+  }
+
   return {
     props: {
-      pokemon: await getPokemonInfo( id )
+      pokemon: pokemon
     },
     revalidate: 86400,  //60 * 60 * 24 = 1 dia
   }
