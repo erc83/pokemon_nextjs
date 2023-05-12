@@ -11,6 +11,7 @@ import { pokeApi } from "../../../api";
 import { Pokemon, PokemonListResponse } from "../../../interfaces";
 
 import { getPokemonInfo, localFavorites } from "../../../utils";
+import { redirect } from "next/dist/server/api-utils";
 
 
 interface Props {
@@ -122,8 +123,8 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
     paths: pokemonName.map( ( name ) => ({
       // params: { name : name}
       params: { name }
-    })), 
-    fallback: false   // <- controlamos la cantidad de paginas cuando no se renderizaron en el inicio 
+    })),     
+    fallback: 'blocking'  
   } 
 }
 
@@ -132,13 +133,21 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   //aqui recibo el name [name].tsx  
   const { name } = params as { name: string };    // para agregar tipo al params
 
+  const pokemon = await getPokemonInfo( name );
+
+  if( !pokemon ) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
 
   return {
     props: {
-      pokemon: await getPokemonInfo( name )
-      // id: 1,
-      // name: 'Bulbasaur'
-    }
+      pokemon
+    },
   }
 }
 
